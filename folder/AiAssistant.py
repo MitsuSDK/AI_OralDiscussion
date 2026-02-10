@@ -3,6 +3,8 @@
 import speech_recognition as sr
 
 recognizer = sr.Recognizer()
+recognizer.pause_threshold = 2.0  # wait 2 seconds of silence
+
 
 ''' recording the sound '''
 
