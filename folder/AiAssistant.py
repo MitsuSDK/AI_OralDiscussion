@@ -5,17 +5,17 @@ import pyttsx3
 import os
 from dotenv import load_dotenv
 from openai import OpenAI
-from dotenv import dotenv_values
-from pathlib import Path
+# from dotenv import dotenv_values
+# from pathlib import Path
 
 
-#BASE_DIR = Path(__file__).resolve().parent.parent
-#load_dotenv(BASE_DIR / ".env")
+# BASE_DIR = Path(__file__).resolve().parent.parent
+# load_dotenv(BASE_DIR / ".env")
 
-#api_key = os.environ["OPENAI_API_KEY"]  # force error if missing
-#client = OpenAI(api_key=api_key)
+# api_key = os.environ["OPENAI_API_KEY"]  # force error if missing
+# client = OpenAI(api_key=api_key)
 
-#print("OpenAI client initialized")
+# print("OpenAI client initialized")
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 load_dotenv(dotenv_path='.env')
@@ -55,27 +55,43 @@ def speech_to_text():
     except Exception as ex:
         print(ex)
 
-# output_of_speech = speech_to_text()
-# print("This is what I said: ", output_of_speech)
+
 
 # output_of_speech to LLM and get response
+def AI_chat(user_text):
+    from openai import OpenAI
+    client = OpenAI()
 
-from openai import OpenAI
-client = OpenAI()
+    response = client.responses.create(
+        model="gpt-5",
+        reasoning={"effort": "low"},
+        input=[
+            {
+                "role": "developer",
+                "content": "You are a helpfull assistant. You speak a classy english.Your name is Vex. A legendary artifact that dedicates his life to his master."
+            },
+            {
+                "role": "user",
+                "content": user_text
+            }
+        ]
+    )
 
-response = client.responses.create(
-    model="gpt-5",
-    reasoning={"effort": "low"},
-    input=[
-        {
-            "role": "developer",
-            "content": "You are a helpfull assistant. You speak a classy english.Your name is Vex. A legendary artifact that dedicates his life to his master."
-        },
-        {
-            "role": "user",
-            "content": "Hello"
-        }
-    ]
-)
+    return response.output_text
 
-print(response.output_text)
+
+# LLM's response to speech
+def text_to_speech(text):
+    engine = pyttsx3.init()
+    engine.say(text)
+    engine.runAndWait()
+
+#I talk then my speech is converted to text
+output_of_speech = speech_to_text()
+
+# AI responds in text
+answer = AI_chat(output_of_speech)
+print(answer)
+
+# AI's response to speech
+text_to_speech(answer)
